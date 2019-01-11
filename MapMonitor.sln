@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapMonitor", "MapMonitor\MapMonitor.csproj", "{1C2F78DB-A7D3-4927-941A-020257FA705D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapBox", "MapBox\MapBox.csproj", "{C13C48FB-F845-47C0-A5EB-629C7490F1EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C2F78DB-A7D3-4927-941A-020257FA705D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C2F78DB-A7D3-4927-941A-020257FA705D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C2F78DB-A7D3-4927-941A-020257FA705D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C2F78DB-A7D3-4927-941A-020257FA705D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C13C48FB-F845-47C0-A5EB-629C7490F1EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C13C48FB-F845-47C0-A5EB-629C7490F1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C13C48FB-F845-47C0-A5EB-629C7490F1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C13C48FB-F845-47C0-A5EB-629C7490F1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {488F8D0F-338E-4379-B3AE-1EF1F7B18A35}
+	EndGlobalSection
+EndGlobal
