@@ -1,13 +1,18 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
+using MechDancer.Framework.Dependency;
 using MechDancer.Framework.Net.Modules.Multicast;
-using MechDancer.Framework.Net.Presets;
+using MechDancer.Framework.Net.Resources;
 
-namespace MapMonitor {
-	public partial class MainForm : Form {
-		public MainForm() {
+namespace MapMonitor
+{
+	public partial class MainForm : Form
+    {
+		public MainForm()
+        {
 			InitializeComponent();
 
 			var sIP   = "230.1.1.100";
@@ -22,18 +27,45 @@ namespace MapMonitor {
 				}
 			}
 
-			// 启动网络连接
-			var hub = new RemoteHub
-				(name: "MapMonitor",
-				 group: new IPEndPoint(IPAddress.Parse(sIP), nPort),
-				 additions: new MulticastListener
-					 (pack => mapBox1.UpdateRaw(pack.Payload), 123)
-				);
+            // 启动网络连接
+            var hub = new MulticastReceiver();
 
-			// 开启接收线程
-			new Thread(() => {
-				           while (true) hub.Invoke();
-			           }) {IsBackground = true}.Start();
-		}
-	}
+            var _scope = new DynamicScope();
+            _scope.Setup(new Name("MapMonitor"));
+
+
+            _scope.Setup(new Networks());
+            _scope.Setup(new MulticastSockets(new IPEndPoint(IPAddress.Parse(sIP), nPort)));
+
+            var monitor = new MulticastMonitor();
+            _scope.Setup(monitor);
+            monitor.BindAll();
+            _scope.Setup(new MulticastBroadcaster());
+            _scope.Setup(hub);
+            _scope.Setup(new MulticastListener
+                     (pack => mapBox1.UpdateRaw(pack.Payload), 123));
+
+
+            // 开启接收线程
+            new Thread(() => {
+                while (true) hub.Invoke();
+            }) {IsBackground = true}.Start();
+        }
+
+        // TopMost功能
+        private void toolStripDropDownButton3_Click(object sender, EventArgs e)
+        {
+            TopMost = !TopMost;
+            if (TopMost)
+            {
+                toolStripDropDownButton3.Image = Properties.Resources._lock;
+                toolStripStatusLabel2.Text = "topmost";
+            }
+            else
+            {
+                toolStripDropDownButton3.Image = Properties.Resources.unlock;
+                toolStripStatusLabel2.Text = "normal";
+            }
+        }
+    }
 }
