@@ -3,16 +3,15 @@ using System.Configuration;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
+using MapMonitor.Properties;
 using MechDancer.Framework.Dependency;
 using MechDancer.Framework.Net.Modules.Multicast;
+using MechDancer.Framework.Net.Presets;
 using MechDancer.Framework.Net.Resources;
 
-namespace MapMonitor
-{
-	public partial class MainForm : Form
-    {
-		public MainForm()
-        {
+namespace MapMonitor {
+	public partial class MainForm : Form {
+		public MainForm() {
 			InitializeComponent();
 
 			var sIP   = "230.1.1.100";
@@ -27,45 +26,42 @@ namespace MapMonitor
 				}
 			}
 
-            // 启动网络连接
-            var hub = new MulticastReceiver();
+			// 开启接收线程
+			new Thread(() => {
+				           // 启动网络连接
+				           var hub = new MulticastReceiver();
 
-            var _scope = new DynamicScope();
-            _scope.Setup(new Name("MapMonitor"));
+				           var scope       = new DynamicScope();
+				           var broadcaster = new MulticastBroadcaster();
+				           var group       = new IPEndPoint(IPAddress.Parse(sIP), nPort);
+				           scope.Setup(new Name("MapMonitor"));
 
+				           scope.Setup(new Networks());
+				           scope.Setup(new MulticastSockets(group));
 
-            _scope.Setup(new Networks());
-            _scope.Setup(new MulticastSockets(new IPEndPoint(IPAddress.Parse(sIP), nPort)));
+				           var monitor = new MulticastMonitor();
+				           scope.Setup(monitor);
+				           monitor.BindAll();
+				           scope.Setup(broadcaster);
+				           scope.Setup(hub);
+				           scope.Setup(new MulticastListener
+					                       (pack => mapBox1.UpdateRaw(pack.Payload), 123));
 
-            var monitor = new MulticastMonitor();
-            _scope.Setup(monitor);
-            monitor.BindAll();
-            _scope.Setup(new MulticastBroadcaster());
-            _scope.Setup(hub);
-            _scope.Setup(new MulticastListener
-                     (pack => mapBox1.UpdateRaw(pack.Payload), 123));
+				           new Pacemaker(group).Activate();
+				           while (true) hub.Invoke();
+			           }) {IsBackground = true}.Start();
+		}
 
-
-            // 开启接收线程
-            new Thread(() => {
-                while (true) hub.Invoke();
-            }) {IsBackground = true}.Start();
-        }
-
-        // TopMost功能
-        private void toolStripDropDownButton3_Click(object sender, EventArgs e)
-        {
-            TopMost = !TopMost;
-            if (TopMost)
-            {
-                toolStripDropDownButton3.Image = Properties.Resources._lock;
-                toolStripStatusLabel2.Text = "topmost";
-            }
-            else
-            {
-                toolStripDropDownButton3.Image = Properties.Resources.unlock;
-                toolStripStatusLabel2.Text = "normal";
-            }
-        }
-    }
+		// TopMost功能
+		private void toolStripDropDownButton3_Click(object sender, EventArgs e) {
+			TopMost = !TopMost;
+			if (TopMost) {
+				toolStripDropDownButton3.Image = Resources._lock;
+				toolStripStatusLabel2.Text     = "topmost";
+			} else {
+				toolStripDropDownButton3.Image = Resources.unlock;
+				toolStripStatusLabel2.Text     = "normal";
+			}
+		}
+	}
 }
