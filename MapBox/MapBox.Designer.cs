@@ -128,6 +128,7 @@
             // cbLine
             // 
             this.cbLine.AutoSize = true;
+            this.cbLine.BackColor = System.Drawing.SystemColors.Control;
             this.cbLine.Checked = true;
             this.cbLine.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbLine.Location = new System.Drawing.Point(133, 6);
@@ -136,35 +137,36 @@
             this.cbLine.Size = new System.Drawing.Size(70, 22);
             this.cbLine.TabIndex = 0;
             this.cbLine.Text = "连线";
-            this.cbLine.UseVisualStyleBackColor = true;
+            this.cbLine.UseVisualStyleBackColor = false;
             // 
             // cbPoint
             // 
             this.cbPoint.AutoSize = true;
-            this.cbPoint.Checked = true;
-            this.cbPoint.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbPoint.BackColor = System.Drawing.SystemColors.Control;
             this.cbPoint.Location = new System.Drawing.Point(3, 6);
             this.cbPoint.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.cbPoint.Name = "cbPoint";
             this.cbPoint.Size = new System.Drawing.Size(124, 22);
             this.cbPoint.TabIndex = 1;
             this.cbPoint.Text = "其他定位点";
-            this.cbPoint.UseVisualStyleBackColor = true;
+            this.cbPoint.UseVisualStyleBackColor = false;
             // 
             // cbReliable
             // 
             this.cbReliable.AutoSize = true;
+            this.cbReliable.BackColor = System.Drawing.SystemColors.Control;
             this.cbReliable.Location = new System.Drawing.Point(209, 6);
             this.cbReliable.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.cbReliable.Name = "cbReliable";
             this.cbReliable.Size = new System.Drawing.Size(88, 22);
             this.cbReliable.TabIndex = 2;
             this.cbReliable.Text = "可信度";
-            this.cbReliable.UseVisualStyleBackColor = true;
+            this.cbReliable.UseVisualStyleBackColor = false;
             // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.AutoScroll = true;
+            this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
             this.flowLayoutPanel1.Controls.Add(this.cbPoint);
             this.flowLayoutPanel1.Controls.Add(this.cbLine);
             this.flowLayoutPanel1.Controls.Add(this.cbReliable);
@@ -190,6 +192,7 @@
             // lblThr
             // 
             this.lblThr.AutoSize = true;
+            this.lblThr.BackColor = System.Drawing.SystemColors.Control;
             this.lblThr.Location = new System.Drawing.Point(219, 39);
             this.lblThr.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
             this.lblThr.Name = "lblThr";

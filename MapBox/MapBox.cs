@@ -37,6 +37,8 @@ namespace MapBox {
 		private bool   record;
 		private double scale = -1;
 
+        // 状态栏高度
+        private int statusHeight = 44;
 
 		// 构造
 		public MapBox() {
@@ -85,12 +87,23 @@ namespace MapBox {
 					var count      = (data.Length - 1) / onePackLen;
 					for (var i = 0; i < count; i++) {
 						var id  = BitConverter.ToInt32(data, onePackLen  * i + 1);
+                        if (id > 99 || id < 0)
+                        {
+                            continue;
+                        }
 						var tag = BitConverter.ToInt32(data, onePackLen  * i + 5);
 						var x   = BitConverter.ToInt32(data, onePackLen  * i + 9);
 						var y   = BitConverter.ToInt32(data, onePackLen  * i + 13);
 						var z   = BitConverter.ToInt32(data, onePackLen  * i + 17);
 						var yaw = BitConverter.ToSingle(data, onePackLen * i + 21);
-						list.Add(new Node(id, tag, x, y, yaw));
+                        if (id == 60)
+                        {
+                            long time = 1548200000000 + z;
+                            DateTime dt = new DateTime(1970, 1, 1);
+                            Console.WriteLine(dt.AddMilliseconds(time).AddHours(8));
+                        }
+
+                        list.Add(new Node(id, tag, x, y, yaw));
 					}
 
 					UpdatePos(list);
@@ -114,37 +127,37 @@ namespace MapBox {
 		/// </summary>
 		public void UpdatePos(List<Node> nodeList) {
 			Invoke(new UpdateData(nodes => {
-				                      foreach (var node in nodes) {
-					                      PosNode posNode = null;
-					                      foreach (var pos in posList)
-						                      if (pos.Id == node.Id) {
-							                      posNode = pos;
-							                      break;
-						                      }
+				foreach (var node in nodes) {
+					PosNode posNode = null;
+					foreach (var pos in posList)
+						if (pos.Id == node.Id) {
+							posNode = pos;
+							break;
+						}
 
-					                      if (posNode == null) // 无则新建
-					                      {
-						                      posNode = new PosNode(node);
-						                      posList.Add(posNode);
-						                      ListView_AddItem(posNode);
-					                      } else // 有则更新
-					                      {
-						                      // 轨迹录点
-						                      if (record) {
-							                      posNode.PosList.Add(new Node(posNode));
-							                      for (var i = posNode.PosList.Count - 2; i >= 0; i--)
-								                      if (posNode.PosList[i].Tag >= 0) {
-									                      if (posNode.PosList[i].distance(posNode) < MinSpacing)
-										                      posNode.PosList.Last().Tag -= 101;
-									                      break;
-								                      }
-						                      }
+					if (posNode == null) // 无则新建
+					{
+						posNode = new PosNode(node);
+						posList.Add(posNode);
+						ListView_AddItem(posNode);
+					} else // 有则更新
+					{
+						// 轨迹录点
+						if (record) {
+							posNode.PosList.Add(new Node(posNode));
+							for (var i = posNode.PosList.Count - 2; i >= 0; i--)
+								if (posNode.PosList[i].Tag >= 0) {
+									if (posNode.PosList[i].distance(posNode) < MinSpacing)
+										posNode.PosList.Last().Tag -= 101;
+									break;
+								}
+						}
 
-						                      // 更新
-						                      posNode.Set(node.X, node.Y, node.Tag, node.Yaw);
-					                      }
-				                      }
-			                      }), nodeList);
+						// 更新
+						posNode.Set(node.X, node.Y, node.Tag, node.Yaw);
+					}
+				}
+			}), nodeList);
 			Invalidate();
 		}
 
@@ -167,7 +180,8 @@ namespace MapBox {
 		private Point CalcWinCoord(Point point) {
 			// 自动变换适应窗口
 			var x = (point.X - offset.X) * scale * 0.8 + 0.1 * Width;
-			var y = Height                             - ((point.Y - offset.Y) * scale * 0.8 + 0.1 * Height);
+			var y = (Height - statusHeight) - ((point.Y - offset.Y) * 
+                scale * 0.8 + 0.1 * (Height - statusHeight));
 			// 鼠标拖动与缩放
 			x = (int) (mouseZoomK * x + mouseZoomB.X + mouseTranslate.X);
 			y = (int) (mouseZoomK * y + mouseZoomB.Y + mouseTranslate.Y);
@@ -200,7 +214,7 @@ namespace MapBox {
 			offset.Y = min.Y;
 			// 计算缩放比例
 			scale = Math.Min((double) (Width - 60) / (max.X - min.X),
-			                 (double) Height       / (max.Y - min.Y));
+			                 (double) (Height - statusHeight) / (max.Y - min.Y));
 			if (double.IsInfinity(scale)) scale = -1;
 			return scale;
 		}
@@ -317,12 +331,13 @@ namespace MapBox {
 					rulerText = nRuler / 10 + "cm";
 				else
 					rulerText = nRuler + "mm";
-				graphics.DrawLine(Pens.Black, Width - 20 - rulerWidth, Height - 30, Width - 20, Height - 30);
-				graphics.DrawLine(Pens.Black, Width - 20 - rulerWidth, Height - 30, Width - 20 - rulerWidth,
-				                  Height                 - 33);
-				graphics.DrawLine(Pens.Black, Width - 20, Height - 30, Width - 20, Height - 33);
+                int height = Height - statusHeight;
+                graphics.DrawLine(Pens.Black, Width - 20 - rulerWidth, height - 20, Width - 20, height - 20);
+				graphics.DrawLine(Pens.Black, Width - 20 - rulerWidth, height - 20, Width - 20 - rulerWidth,
+				                  height                 - 23);
+				graphics.DrawLine(Pens.Black, Width - 20, height - 20, Width - 20, height - 23);
 				graphics.DrawString(rulerText, new Font("Arial", 10), Brushes.Black,
-				                    new RectangleF(Width - 40 - rulerWidth, Height - 30, 40 + rulerWidth, 20),
+				                    new RectangleF(Width - 40 - rulerWidth, height - 20, 40 + rulerWidth, 20),
 				                    sfCenter);
 			}
 		}
