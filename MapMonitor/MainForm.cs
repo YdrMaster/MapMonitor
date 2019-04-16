@@ -62,7 +62,7 @@ namespace MapMonitor
             {
                 toolStripDropDownButton3.Image = Resources.unlock;
             }
-            toolStripStatusLabel2.Text = (TopMost ? "至于顶层；" : "") +
+            toolStripStatusLabel2.Text = (TopMost ? "置于顶层；" : "") +
                 (tsmiNetworkNew.Checked ? "新网络协议；" : "") +
                 (tsmiNetworkOld.Checked ? "旧网络协议；" : "").TrimEnd('；');
         }
@@ -70,7 +70,7 @@ namespace MapMonitor
         private void TsmiNetworkNew_Click(object sender, EventArgs e)
         {
             tsmiNetworkNew.Checked = !tsmiNetworkNew.Checked;
-            toolStripStatusLabel2.Text = (TopMost ? "至于顶层；" : "") +
+            toolStripStatusLabel2.Text = (TopMost ? "置于顶层；" : "") +
                 (tsmiNetworkNew.Checked ? "新网络协议；" : "") +
                 (tsmiNetworkOld.Checked ? "旧网络协议；" : "").TrimEnd('；');
         }
@@ -86,7 +86,7 @@ namespace MapMonitor
             {
                 udp.DataUpdated -= mapBox1.UpdateRaw;
             }
-            toolStripStatusLabel2.Text = (TopMost ? "至于顶层；" : "") +
+            toolStripStatusLabel2.Text = (TopMost ? "置于顶层；" : "") +
                 (tsmiNetworkNew.Checked ? "新网络协议；" : "") +
                 (tsmiNetworkOld.Checked ? "旧网络协议；" : "").TrimEnd('；');
         }

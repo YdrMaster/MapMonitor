@@ -196,7 +196,7 @@ namespace MapBox
             string desc = node.Id.ToString();
             if (id == 0)
             {
-                desc = id / 10 + "里程计";
+                desc = "里程计";
             }
             else if (id < 1000)
             {
@@ -381,7 +381,7 @@ namespace MapBox
                 // 录点指示
                 if (record)
                     if (((Environment.TickCount >> 8) & 3) > 0)
-                        graphics.FillEllipse(Brushes.Red, listView1.Location.X - 15, 5, 10, 10);
+                        graphics.FillEllipse(Brushes.Red, flowLayoutPanel2.Location.X - 15, 5, 10, 10);
                 // 比例尺
                 var rulerWidth = 50; // 比例尺显示长度(像素)
                 var rulerText = "";
@@ -463,7 +463,8 @@ namespace MapBox
             listView1.Height = listView1.Items.Count * 16 + 4;
             listView2.Height = listView2.Items.Count * 16 + 4;
             flowLayoutPanel2.Location = new Point(Width - 117, 2);
-            flowLayoutPanel2.Height = Height - 90;
+            flowLayoutPanel2.Height = listView1.Height + 2 < Height - 90 ? 
+                listView1.Height + 2 : Height - 90;
             flowLayoutPanel1.Width = flowLayoutPanel2.Location.X - 30 > 400 ? 
                 400 : flowLayoutPanel2.Location.X - 30;
             flowLayoutPanel1.Height = 40;
